@@ -54,20 +54,17 @@ const MovieDetail = () => {
       }
     };
 
-    // Mengambil token dari URL
+
     const urlParams = new URLSearchParams(window.location.search);
     const requestToken = urlParams.get('request_token');
     const approved = urlParams.get('approved');
 
-    // Jika token dan approved=true ada pada URL, set token ke state dan simpan di localStorage
     if (requestToken && approved === 'true') {
       setSessionToken(requestToken);
       localStorage.setItem('sessionToken', requestToken);
 
-      // Redirect ke homepage tanpa parameter token di URL
       window.location.href = '/homepage';
     } else {
-      // Jika tidak ada token di URL, coba ambil dari localStorage
       const storedToken = localStorage.getItem('sessionToken');
       if (storedToken) {
         setSessionToken(storedToken);
@@ -85,7 +82,6 @@ const MovieDetail = () => {
   }, [movieId, sessionToken, session]);
 
   if (!movieDetails || recommendedMovies.length === 0) {
-    // Handle loading state or redirect
     return <p>Loading...</p>;
   }
 

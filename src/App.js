@@ -14,7 +14,6 @@ function App() {
   const [sessionToken, setSessionToken] = useState(null);
 
   useEffect(() => {
-    // Cek session token di localStorage saat komponen dimount
     const storedToken = localStorage.getItem("sessionToken");
     if (storedToken) {
       setSessionToken(storedToken);
