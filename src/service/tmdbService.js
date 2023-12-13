@@ -1,10 +1,12 @@
 import axios from 'axios';
 
 const BASE_URL = 'https://api.themoviedb.org/3';
-const API_KEY = 'YOUR_API_KEY';
-const ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
-const ACCOUNT_ID = 'YOUR_ACCOUNT_ID';
-
+// const API_KEY = 'YOUR_API_KEY';
+// const ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
+// const ACCOUNT_ID = 'YOUR_ACCOUNT_ID';
+const API_KEY = '57039c698b15a4bd517fb3d8be6ef256';
+const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NzAzOWM2OThiMTVhNGJkNTE3ZmIzZDhiZTZlZjI1NiIsInN1YiI6IjY1NzcwNDM5OTQ1MWU3MGZlZDA3MmJhZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UA7OqnJ80B6NJpDVasfAdCNbPfkeMq25oJTIjnD-wS8'
+const ACCOUNT_ID = 20817155;
 const authenticate = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/authentication/token/new?api_key=${API_KEY}`);
@@ -131,7 +133,7 @@ const getMovieDetails = async (movieId) => {
   const getRecommendedMovies = async (movieId) => {
     try {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${API_KEY}&language=en-US&page=1`
+        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=${API_KEY}&language=en-US`
       );
   
       if (!response.ok) {
@@ -204,11 +206,11 @@ const getMovieDetails = async (movieId) => {
   const addToWatchlist = async (sessionToken, movieId) => {
     try {
       const response = await axios.post(
-        `${BASE_URL}/account/${ACCOUNT_ID}/favorite`,
+        `${BASE_URL}/account/${ACCOUNT_ID}/watchlist`,
         {
           media_type: 'movie',
           media_id: movieId,
-          favorite: true,
+          watchlist: true,
         },
         {
           headers: {
@@ -230,68 +232,87 @@ const getMovieDetails = async (movieId) => {
       throw error;
     }
   };
-
   const getFavoriteMovies = async (sessionToken) => {
     try {
-      const url = `${BASE_URL}/account/${ACCOUNT_ID}/favorite/movies?language=en-US&page=1&sort_by=created_at.asc`;
+      let allResults = [];
+      let page = 1;
+      let totalPages = 1;
   
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${ACCESS_TOKEN}`
+      while (page <= totalPages) {
+        const url = `${BASE_URL}/account/${ACCOUNT_ID}/favorite/movies?language=en-US&sort_by=created_at.asc&page=${page}`;
+  
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${ACCESS_TOKEN}`
+          }
+        };
+  
+        const response = await fetch(url, options);
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      };
   
-      const response = await fetch(url, options);
+        const data = await response.json();
   
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        if (data.results) {
+          allResults = [...allResults, ...data.results];
+          totalPages = data.total_pages;
+          page++;
+        } else {
+          throw new Error('Invalid response from TMDB API');
+        }
       }
   
-      const data = await response.json();
-  
-      if (data.results) {
-        return data.results;
-      } else {
-        throw new Error('Invalid response from TMDB API');
-      }
+      return allResults;
     } catch (error) {
       console.error('Error fetching favorite movies:', error);
       throw error;
     }
   };
-
+  
   const getWatchlistMovies = async (sessionToken) => {
     try {
-      const url = `${BASE_URL}/account/${ACCOUNT_ID}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`;
+      let allResults = [];
+      let page = 1;
+      let totalPages = 1; // Assuming there's information about the total number of pages in the response
   
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${ACCESS_TOKEN}`
+      while (page <= totalPages) {
+        const url = `${BASE_URL}/account/${ACCOUNT_ID}/watchlist/movies?language=en-US&sort_by=created_at.asc&page=${page}`;
+  
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: `Bearer ${ACCESS_TOKEN}`
+          }
+        };
+  
+        const response = await fetch(url, options);
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      };
   
-      const response = await fetch(url, options);
+        const data = await response.json();
   
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        if (data.results) {
+          allResults = [...allResults, ...data.results];
+          totalPages = data.total_pages;
+          page++;
+        } else {
+          throw new Error('Invalid response from TMDB API');
+        }
       }
   
-      const data = await response.json();
-  
-      if (data.results) {
-        return data.results;
-      } else {
-        throw new Error('Invalid response from TMDB API');
-      }
+      return allResults;
     } catch (error) {
       console.error('Error fetching watchlist movies:', error);
       throw error;
     }
   };
-
+  
 
 export { authenticate, createSession, getWatchlistMovies, getNowPlayingMovies,addToWatchlist, getTopRatedMovies, searchMovie, getMovieDetails, getRecommendedMovies,getFavoriteMovies, submitRatingToApi, addToFavorites, getAccountDetails };

@@ -45,7 +45,7 @@ const FavoritePage = ({ sessionToken }) => {
   return (
     <div className="overflow-x-auto px-4 py-2 sm:px-6 lg:px-8" style={{ scrollSnapType: 'x mandatory', whiteSpace: 'nowrap' }}>
       <h2 className="text-3xl font-bold tracking-tight mb-1 text-gray-900">My Favorite</h2>
-      <Carousel responsive={responsive}>
+      <div className="mt-1 grid grid-cols-1 gap-x-1 gap-y-8 sm:grid-cols-2 lg:grid-cols-6 xl:gap-x-2">
         {favoriteMovies.map((movie) => (
           <div key={movie.id} className="group relative mx-1">
             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-white lg:aspect-none group-hover:opacity-30 lg:h-">
@@ -66,7 +66,7 @@ const FavoritePage = ({ sessionToken }) => {
             </div>
           </div>
         ))}
-      </Carousel>
+      </div>
     </div>
   );
 };

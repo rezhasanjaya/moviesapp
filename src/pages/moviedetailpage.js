@@ -114,8 +114,6 @@ const MovieDetail = () => {
   const handleRatingChange = (newRating) => {
     try {
       submitRatingToApi(movieId, newRating, sessionToken);
-      // Update state if needed
-      // setUserRating(newRating);
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
