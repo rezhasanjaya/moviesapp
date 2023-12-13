@@ -4,9 +4,7 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 // const API_KEY = 'YOUR_API_KEY';
 // const ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
 // const ACCOUNT_ID = 'YOUR_ACCOUNT_ID';
-const API_KEY = '57039c698b15a4bd517fb3d8be6ef256';
-const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1NzAzOWM2OThiMTVhNGJkNTE3ZmIzZDhiZTZlZjI1NiIsInN1YiI6IjY1NzcwNDM5OTQ1MWU3MGZlZDA3MmJhZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UA7OqnJ80B6NJpDVasfAdCNbPfkeMq25oJTIjnD-wS8'
-const ACCOUNT_ID = 20817155;
+
 const authenticate = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/authentication/token/new?api_key=${API_KEY}`);
