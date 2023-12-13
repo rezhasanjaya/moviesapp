@@ -147,7 +147,7 @@ const getMovieDetails = async (movieId) => {
     }
   };
 
-  const submitRatingToApi = async (movieId, userRating, sessionToken) => {
+  const submitRatingToApi = async (userRating, sessionToken, movieId) => {
     try {
       const response = await axios.post(
         `${BASE_URL}/movie/${movieId}/rating`,
@@ -155,23 +155,51 @@ const getMovieDetails = async (movieId) => {
           value: userRating,
         },
         {
-          params: {
-            api_key: API_KEY,
-            session_id: sessionToken,
+          headers: {
+            'Authorization': `Bearer ${ACCESS_TOKEN}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
         }
       );
   
       if (response.data && response.data.success) {
-        return response.data.success;
+        console.log('Rating added successfully:', response.data);
+        return response.data;
       } else {
-        throw new Error(`Failed to submit rating: ${JSON.stringify(response.data)}`);
+        throw new Error('Failed to add rating');
       }
     } catch (error) {
-      console.error('Error submitting rating to API:', error.message);
+      console.error('Error adding rating:', error.response ? error.response.data : error.message);
       throw error;
     }
   };
+
+  // const submitRatingToApi = async (movieId, userRating, sessionToken) => {
+  //   try {
+  //     const response = await axios.post(
+  //       `${BASE_URL}/movie/${movieId}/rating`,
+  //       {
+  //         value: userRating,
+  //       },
+  //       {
+  //         params: {
+  //           api_key: API_KEY,
+  //           session_id: sessionToken,
+  //         },
+  //       }
+  //     );
+  
+  //     if (response.data && response.data.success) {
+  //       return response.data.success;
+  //     } else {
+  //       throw new Error(`Failed to submit rating: ${JSON.stringify(response.data)}`);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error submitting rating to API:', error.message);
+  //     throw error;
+  //   }
+  // };
 
   const addToFavorites = async (sessionToken, movieId) => {
     try {

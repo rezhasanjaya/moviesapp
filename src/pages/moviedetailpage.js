@@ -108,13 +108,15 @@ const MovieDetail = () => {
   const posterImageUrl = `https://image.tmdb.org/t/p/w500${poster_path}`;
 
   const handleRatingChange = (newRating) => {
+    // Convert the newRating to fit the 0-10 scale
+    const tmdbRating = newRating * 2;
+  
     try {
-      submitRatingToApi(movieId, newRating, sessionToken);
+      submitRatingToApi(tmdbRating, sessionToken, movieId);
     } catch (error) {
       console.error('Error submitting rating:', error);
     }
   };
-
   const handleAddToFavorites = async () => {
     try {
       const result = await addToFavorites(sessionToken, movieId);
@@ -133,8 +135,6 @@ const MovieDetail = () => {
     }
   };
   
-  
-
   return (
     <div>
       <div
@@ -148,7 +148,15 @@ const MovieDetail = () => {
           <img src={posterImageUrl} alt={title} className="w-32 h-48 ml-10 rounded shadow-md" />
           <div className="ml-4 text-white mr-10">
             <h1 className="text-2xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)' }}>
-              <Rating count={5} value={0} onChange={handleRatingChange} size={30} activeColor="#ffd700" />
+            <Rating
+              count={5} // Set the count to 5 for 5 clickable stars
+              value={0} // The initial value, you may set it based on the user's existing rating if applicable
+              onChange={handleRatingChange}
+              size={30}
+              activeColor="#ffd700"
+              isHalf={true} // Enable half-star ratings
+            />
+
               {title} ({release_date.split('-')[0]})
             </h1>
             <p
